@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%%22 x=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2290%22>🐍</text></svg>" />
+    <title>Snake</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <header id="counter">Score: 0</header>
+
+    <audio id="gulp-sound" src="gulp.mp3" preload="auto"></audio>
+
+</body>
+</html>
+<script type="module">
+    import Game from './js/game.js'
+    
+    new Game()
+</script>
+<style>
+    * {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    canvas {
+        position: fixed;
+        top: calc(50% + 64px);
+        left: 50%;
+        transform: translate(-50%, calc(-50% - 32px));
+        background: #1e1e1e;
+        box-shadow: 0 0 0 100vmax #1dbfea;
+    }
+    header {
+        color: #1e1e1e;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        font-size: 32px;
+        font-weight: 600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    svg {
+        width: 100px;
+        height: 100px;
+    }
+
+</style>
