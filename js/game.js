@@ -6,6 +6,12 @@ export default class Game {
         this.renderer = new Draw()
         this.counter = document.getElementById('counter')
         this.speed = speed
+
+        // 🎧 Load audio elements
+        this.gulpSound = document.getElementById('gulp-sound')
+        this.bgMusic = document.getElementById('bg-music')
+        this.loseSound = document.getElementById('lose-sound')
+
         window.addEventListener(
             'resize',
             () => {
@@ -36,6 +42,13 @@ export default class Game {
 
         this.ctrl_queue = ''
         this.placeApple()
+
+        // 🎵 Restart background music
+        if (this.bgMusic) {
+            this.bgMusic.currentTime = 0
+            this.bgMusic.play()
+        }
+
         this.gameLoop()
     }
 
@@ -50,9 +63,9 @@ export default class Game {
 
     listen() {
         const map = {
-            38: 'w', 39: 'd', 40: 's', 37: 'a', // Arrow keys
-            75: 'w', 76: 'd', 74: 's', 72: 'a', // Vim keys
-            87: 'w', 68: 'd', 83: 's', 65: 'a'  // WASD
+            38: 'w', 39: 'd', 40: 's', 37: 'a',
+            75: 'w', 76: 'd', 74: 's', 72: 'a',
+            87: 'w', 68: 'd', 83: 's', 65: 'a'
         }
         document.addEventListener('keydown', event => {
             const modifiers = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey
@@ -66,6 +79,7 @@ export default class Game {
                 }
             }
         })
+
         let touch_start_client_x, touch_start_client_y
         const canvas = this.renderer.canvas
         canvas.addEventListener('touchstart', event => {
@@ -74,7 +88,9 @@ export default class Game {
             touch_start_client_y = event.touches[0].pageY
             if (!this.game_over) event.preventDefault()
         })
+
         canvas.addEventListener('touchmove', event => event.preventDefault())
+
         canvas.addEventListener('touchend', event => {
             if (event.touches.length > 1) return
             const touchEndClientX = event.changedTouches[0].pageX
@@ -94,6 +110,15 @@ export default class Game {
     }
 
     waitAndRestart(message) {
+        // 🛑 Stop background music
+        if (this.bgMusic) this.bgMusic.pause()
+
+        // 💥 Play lose sound
+        if (message === 'Game over!' && this.loseSound) {
+            this.loseSound.currentTime = 0
+            this.loseSound.play()
+        }
+
         this.renderer.renderSnake(this.snake, this.apple, this.frame)
         this.renderer.showMessage(message)
         new Promise(resolve =>
@@ -109,11 +134,9 @@ export default class Game {
 
         while (this.frame >= 1 && !this.game_over) {
             if (this.apple_eaten) {
-                // 🎵 Play gulp sound!
-                const gulpSound = document.getElementById('gulp-sound')
-                if (gulpSound) {
-                    gulpSound.currentTime = 0
-                    gulpSound.play()
+                if (this.gulpSound) {
+                    this.gulpSound.currentTime = 0
+                    this.gulpSound.play()
                 }
 
                 if (this.won) {
@@ -121,6 +144,7 @@ export default class Game {
                     this.waitAndRestart('You win!')
                     return
                 }
+
                 this.apple_eaten = false
                 this.placeApple()
             }
